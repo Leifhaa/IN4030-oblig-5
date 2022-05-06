@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Random;
 /**
 * Nor: Class NPunkter17 for aa finne n tilfeldige, ulike  punkter i x,y-planet 
