@@ -54,9 +54,9 @@ public class SequentialConvexHull {
         splitterBottom.split();
         seqRec(middleLine2, splitterBottom.lowestLeftPointIndex, splitterBottom.leftSide);
 
-        Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
-        precode.margin = 200;
-        precode.drawGraph();
+        //Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
+        //precode.margin = 200;
+        //precode.drawGraph();
     }
 
     private void seqRec(Line line, int p3, IntList pointCandidates){
