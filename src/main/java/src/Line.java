@@ -20,10 +20,10 @@ public class Line {
     public Line(ConvexHull chart, int startIndex, int endIndex) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-        int x1 = chart.x[chart.MAX_X];
-        int y1 = chart.y[chart.MAX_X];
-        int x2 = chart.x[chart.MIN_X];
-        int y2 = chart.y[chart.MIN_X];
+        int x1 = chart.x[startIndex];
+        int y1 = chart.y[startIndex];
+        int x2 = chart.x[endIndex];
+        int y2 = chart.y[endIndex];
 
         a = y1 - y2;
         b = x2 - x1;
