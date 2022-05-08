@@ -42,12 +42,17 @@ public class SequentialConvexHull {
 
         //Create the middle line between min & max
         Line middleLine = new Line(chart, chart.MAX_X, chart.MIN_X);
-        ConvexHullPointSplitter splitter = new ConvexHullPointSplitter(middleLine, chart);
-        splitter.split();
+        ConvexHullPointSplitter splitterTop = new ConvexHullPointSplitter(middleLine, chart);
+        splitterTop.split();
 
         //Call recursive method for upper & lower part of the convex hull
-        seqRec(middleLine, splitter.lowestLeftPointIndex, splitter.leftSide);
-        seqRec(middleLine, splitter.lowestLeftPointIndex, splitter.rightSide);
+        seqRec(middleLine, splitterTop.lowestLeftPointIndex, splitterTop.leftSide);
+        coHull.add(chart.MIN_X);
+
+        Line middleLine2 = new Line(chart, chart.MIN_X, chart.MAX_X);
+        ConvexHullPointSplitter splitterBottom = new ConvexHullPointSplitter(middleLine2, splitterTop.rightSide);
+        splitterBottom.split();
+        seqRec(middleLine2, splitterBottom.lowestLeftPointIndex, splitterBottom.leftSide);
 
         Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
         precode.margin = 200;
@@ -63,9 +68,7 @@ public class SequentialConvexHull {
         if (splitter.hasFoundLowestPoint()){
             seqRec(firstLine, splitter.lowestLeftPointIndex, splitter.leftSide);
         }
-        else{
-            coHull.add(p3);
-        }
+        coHull.add(p3);
 
         Line secondLine = new Line(chart, p3, line.getEndIndex());
         ConvexHullPointSplitter secondSplitter = new ConvexHullPointSplitter(secondLine, splitter.rightSide);
@@ -106,7 +109,6 @@ public class SequentialConvexHull {
 
         public void split(){
             int lowestPoint = 0;
-            int highestPoint = 0;
             rightSide = new IntList();
             leftSide = new IntList();
             for (int i = 0; i < pointCandidates.len; i++){
@@ -121,9 +123,6 @@ public class SequentialConvexHull {
                 int distance = line.calcRelativeDistance(x, y);
                 if (distance > 0){
                     rightSide.add(pointCandidates.get(i));
-                    if (distance > highestPoint){
-                        highestPoint = distance;
-                    }
                 }
                 else if (distance < 0){
                     leftSide.add(pointCandidates.get(i));
