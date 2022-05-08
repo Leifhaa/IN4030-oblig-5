@@ -6,18 +6,36 @@ import org.junit.Test;
 public class TestLine {
 
     @Test
-    public void testCalcDistance(){
-        //Line line = new Line(1,2, 7, 4);
-        //double distance = line.calcAbsoluteDistance(3,6);
-        //Assert.assertTrue(distance  > 3.15 && distance < 3.17);
+    public void test100(){
+        SequentialConvexHull seq = new SequentialConvexHull(100);
+
+        long seqTime = System.nanoTime();
+        seq.find();
+        double total = (System.nanoTime() - seqTime) / 1000000.0;;
+        System.out.println(total);
+
+
+        IntList expected = new IntList();
+        expected.add(3);
+        expected.add(34);
+        expected.add(38);
+        expected.add(10);
+        expected.add(51);
+        expected.add(16);
+        expected.add(54);
+        expected.add(88);
+        expected.add(17);
+        expected.add(47);
+        expected.add(29);
+        expected.add(81);
+        expected.add(1);
+        expected.add(65);
+        expected.add(67);
+        expected.add(85);
+        for (int i = 0; i <  seq.coHull.len; i++){
+            Assert.assertEquals(seq.coHull.get(i), expected.get(i));
+        }
     }
 
-    @Test
-    public void testCalcDistanceScore(){
-        //Line line = new Line(1,2, 7, 4);
-        //int distance = line.calcRelativeDistance(3,6);
-        //Assert.assertEquals(20, distance);
-        //int distance2 = line.calcRelativeDistance(5, 1);
-        //Assert.assertEquals(-14, distance2);
-    }
+
 }
