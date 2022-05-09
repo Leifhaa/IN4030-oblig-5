@@ -1,5 +1,8 @@
 package src;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class ParaConvexHull {
 
     private final ConvexHull chart;
@@ -22,10 +25,8 @@ public class ParaConvexHull {
 
         findMinAndMax();
 
-
         //Decide depth of using threads
         int maxDepth = nThreads / 2;
-
 
         //Create the middle line between min & max
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
@@ -53,7 +54,7 @@ public class ParaConvexHull {
         }
         coHull.add(chart.MAX_X);
         coHull.append(worker0.getPointsFound());
-        coHull.add(chart.MIN_X);
+        //coHull.add(chart.MIN_X);
         coHull.append(worker1.getPointsFound());
 
 
@@ -95,4 +96,6 @@ public class ParaConvexHull {
             }
         }
     }
+
+
 }

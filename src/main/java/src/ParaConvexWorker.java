@@ -13,12 +13,12 @@ public class ParaConvexWorker implements Runnable {
     private SequentialConvexHull seq;
     private IntList pointsFound = new IntList();
 
-    public ParaConvexWorker(Line parentLine, ConvexHullPointSplitter splitter, ConvexHull chart, int treeLevel, int maxDepth){
+    public ParaConvexWorker(Line parentLine, ConvexHullPointSplitter splitter, ConvexHull chart, int treeLevel, int maxDepth) {
         this.parentLine = parentLine;
         this.parentSplitter = splitter;
         this.chart = chart;
-        this.treeLevel = treeLevel++;
-        this.allowThreadCreation = treeLevel >= maxDepth;
+        this.treeLevel = treeLevel + 1;
+        this.allowThreadCreation = treeLevel < maxDepth;
         this.maxDepth = maxDepth;
     }
 
@@ -26,8 +26,10 @@ public class ParaConvexWorker implements Runnable {
     public void run() {
         parentSplitter.split();
 
+        //If there's new external points, create new threads
         if (parentSplitter.hasFoundLowestPoint()){
-            if (allowThreadCreation){
+            //Create new threads for investigating these external threads, if allowed
+            if (allowThreadCreation) {
                 Line line0 = new Line(chart, parentLine.getStartIndex(), parentSplitter.getLowestLeftPointIndex());
                 ConvexHullPointSplitter splitter0 = new ConvexHullPointSplitter(line0, parentSplitter.getLeftSide(), chart);
                 ParaConvexWorker worker0 = new ParaConvexWorker(line0, splitter0, chart, treeLevel, maxDepth);
@@ -51,16 +53,43 @@ public class ParaConvexWorker implements Runnable {
 
                 pointsFound.append(worker0.getPointsFound());
                 pointsFound.append(worker1.getPointsFound());
-            }
-            else{
+            } else {
+                //Do it sequentially as we're not allowed to create more threads
                 SequentialConvexHull seq = new SequentialConvexHull(chart);
                 seq.seqRec(parentLine, parentSplitter.getLowestLeftPointIndex(), parentSplitter.getLeftSide());
                 pointsFound.append(seq.coHull);
             }
         }
+        else{
+            sortLinePoints(parentSplitter.getMidPoints(), parentLine.getEndIndex());
+            pointsFound.append(parentSplitter.getMidPoints());
+            pointsFound.add(parentLine.getEndIndex());
+        }
     }
 
-    public IntList getPointsFound(){
+    private void sortLinePoints(IntList points, int p2){
+        if (points.len == 0){
+            return;
+        }
+
+        //Create an copy of the array (size has to be correct here)
+        Integer[] clone = new Integer[points.len];
+        for (int i = 0; i < points.len; i++){
+            clone[i] = points.get(i);
+        }
+
+        Arrays.sort(clone, 0, points.size(), (Comparator.comparingInt((Integer i) -> relativeDistanceBetweenPoints(i, p2))));
+
+        for (int i = 0; i < clone.length; i++) {
+            points.data[i] = clone[i];
+        }
+    }
+
+    private int relativeDistanceBetweenPoints(int p1, int p2) {
+        return (int) (Math.pow(chart.x[p1] - chart.x[p2], 2) + Math.pow(chart.y[p1] - chart.y[p2], 2));
+    }
+
+    public IntList getPointsFound() {
         return pointsFound;
     }
 }
