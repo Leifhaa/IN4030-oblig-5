@@ -11,8 +11,8 @@ public class SequentialConvexHull {
         this.chart = chart;
     }
 
-    public void populateChart(int n){
-        NPunkter17 nPnkter = new NPunkter17(n, 2);
+    public void populateChart(int n, int seed){
+        NPunkter17 nPnkter = new NPunkter17(n, seed);
         nPnkter.fyllArrayer(chart.x, chart.y);
     }
 

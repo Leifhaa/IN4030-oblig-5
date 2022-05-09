@@ -3,7 +3,6 @@ package src;
 public class ConvexHullPointSplitterPara {
 
     private final Line line;
-    private IntList pointCandidates;
     private final ConvexHull chart;
     private IntList rightSide;
     private IntList leftSide;
@@ -12,12 +11,6 @@ public class ConvexHullPointSplitterPara {
     private int lowestPointVal = 0;
     private int highestRightPointIndex = -1;
     private int highestPointVal = 0;
-
-
-
-    public boolean hasFoundLowestPoint(){
-        return lowestLeftPointIndex != -1;
-    }
 
     public int getLowestLeftPointIndex() {
         return lowestLeftPointIndex;
@@ -77,7 +70,7 @@ public class ConvexHullPointSplitterPara {
         }
     }
 
-    public int getHighestRIghtPointIndex() {
+    public int getHighestRightPointIndex() {
         return highestRightPointIndex;
     }
 

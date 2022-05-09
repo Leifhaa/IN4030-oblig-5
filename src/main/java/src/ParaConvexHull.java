@@ -8,11 +8,11 @@ public class ParaConvexHull {
     private Thread[] findMaxThreads;
     public IntList coHull = new IntList();
 
-    public ParaConvexHull(int n){
+    public ParaConvexHull(int n, int seed, int nThreads){
         this.chart = new ConvexHull(n);
-        NPunkter17 nPnkter = new NPunkter17(n, 2);
+        NPunkter17 nPnkter = new NPunkter17(n, seed);
         nPnkter.fyllArrayer(chart.x, chart.y);
-        nThreads = Runtime.getRuntime().availableProcessors();
+        this.nThreads = nThreads;
         findMaxWorkers = new FindMaxWorker[nThreads];
         findMaxThreads = new Thread[nThreads];
     }
@@ -34,6 +34,7 @@ public class ParaConvexHull {
         initSplit.splitByChart();
 
         ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, initSplit.getLeftSide(), chart);
+        //Inject the initial split values
         splitterLeft.setSplitValues(initSplit.getRightSide(), initSplit.getLeftSide(), initSplit.getMidPoints(), initSplit.getLowestLeftPointIndex(), initSplit.getLowestPointVal());
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
@@ -42,7 +43,8 @@ public class ParaConvexHull {
 
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
         ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, initSplit.getRightSide(), chart);
-        splitterRight.setSplitValues(initSplit.getLeftSide(), initSplit.getRightSide(), initSplit.getMidPoints(), initSplit.getHighestRIghtPointIndex(), initSplit.getHighestPointVal());
+        //Inject the initial split values
+        splitterRight.setSplitValues(initSplit.getLeftSide(), initSplit.getRightSide(), initSplit.getMidPoints(), initSplit.getHighestRightPointIndex(), initSplit.getHighestPointVal());
         ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
         worker1.run();
 

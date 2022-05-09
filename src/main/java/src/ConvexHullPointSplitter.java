@@ -101,33 +101,4 @@ public class ConvexHullPointSplitter {
         this.lowestPointVal = lowestPointVal;
         this.splitted = true;
     }
-
-    public void splitByChart(){
-        rightSide = new IntList();
-        leftSide = new IntList();
-        midPoints = new IntList();
-        for (int candidate = 0; candidate < chart.n; candidate++){
-
-            if (candidate == line.getStartIndex() || candidate == line.getEndIndex()){
-                continue;
-            }
-
-            int x = chart.x[candidate];
-            int y = chart.y[candidate];
-            int distance = line.calcRelativeDistance(x, y);
-            if (distance > 0){
-                rightSide.add(candidate);
-            }
-            else if (distance < 0) {
-                leftSide.add(candidate);
-                if (distance < lowestPointVal){
-                    lowestLeftPointIndex = candidate;
-                    lowestPointVal = distance;
-                }
-            }
-            else{
-                midPoints.add(candidate);
-            }
-        }
-    }
 }

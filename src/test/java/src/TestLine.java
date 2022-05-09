@@ -10,7 +10,7 @@ public class TestLine {
         int n = 100;
         ConvexHull chart = new ConvexHull(n);
         SequentialConvexHull seq = new SequentialConvexHull(chart);
-        seq.populateChart(n);
+        seq.populateChart(n, 2);
 
         long seqTime = System.nanoTime();
         seq.find();
@@ -43,7 +43,8 @@ public class TestLine {
 
     @Test
     public void testPara100() {
-        ParaConvexHull para = new ParaConvexHull(100);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        ParaConvexHull para = new ParaConvexHull(100, 2, nThreads);
 
         long seqTime = System.nanoTime();
         para.find();
@@ -81,7 +82,7 @@ public class TestLine {
         for (int i = 0; i < 7; i++) {
             ConvexHull chart = new ConvexHull(n);
             SequentialConvexHull seq = new SequentialConvexHull(chart);
-            seq.populateChart(n);
+            seq.populateChart(n, 2);
 
             long seqTime = System.nanoTime();
             seq.find();
@@ -89,15 +90,15 @@ public class TestLine {
             ;
             System.out.println(total);
         }
-
     }
 
 
     @Test
     public void testPara_10million() {
         int n = 100_000_00;
+        int nThreads = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < 7; i++) {
-            ParaConvexHull para = new ParaConvexHull(n);
+            ParaConvexHull para = new ParaConvexHull(n, 2, nThreads);
             long seqTime = System.nanoTime();
             para.find();
             double total = (System.nanoTime() - seqTime) / 1000000.0;
@@ -106,14 +107,14 @@ public class TestLine {
 
     }
 
-    private void compareResults(int n) {
-        ParaConvexHull para = new ParaConvexHull(n);
+    private void compareResults(int n, int seed, int nThreads) {
+        ParaConvexHull para = new ParaConvexHull(n, seed, nThreads);
         para.find();
 
 
         ConvexHull chart = new ConvexHull(n);
         SequentialConvexHull seq = new SequentialConvexHull(chart);
-        seq.populateChart(n);
+        seq.populateChart(n, seed);
         seq.find();
 
         Assert.assertEquals(para.coHull.len, seq.coHull.len);
@@ -125,33 +126,44 @@ public class TestLine {
     @Test
     public void test_seqAndParaIsEqual_10() {
         int n = 10;
-        compareResults(n);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 2, nThreads);
     }
-
 
 
     @Test
     public void test_seqAndParaIsEqual_100() {
         int n = 100;
-        compareResults(n);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 2, nThreads);
     }
 
     @Test
     public void test_seqAndParaIsEqual_1000() {
         int n = 1000;
-        compareResults(n);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 2 ,nThreads);
+    }
+
+    @Test
+    public void test_seqAndParaIsEqual_1000_different_seed() {
+        int n = 1000;
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 10 ,nThreads);
     }
 
     @Test
     public void test_seqAndParaIsEqual_10000() {
         int n = 10000;
-        compareResults(n);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 2, nThreads);
     }
 
     @Test
     public void test_seqAndParaIsEqual_100000() {
         int n = 100000;
-        compareResults(n);
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        compareResults(n, 2, nThreads);
     }
 
 
