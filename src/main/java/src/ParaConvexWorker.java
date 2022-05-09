@@ -30,6 +30,7 @@ public class ParaConvexWorker implements Runnable {
         if (parentSplitter.hasFoundLowestPoint()){
             //Create new threads for investigating these external threads, if allowed
             if (allowThreadCreation) {
+
                 Line line0 = new Line(chart, parentLine.getStartIndex(), parentSplitter.getLowestLeftPointIndex());
                 ConvexHullPointSplitter splitter0 = new ConvexHullPointSplitter(line0, parentSplitter.getLeftSide(), chart);
                 ParaConvexWorker worker0 = new ParaConvexWorker(line0, splitter0, chart, treeLevel, maxDepth);
@@ -50,6 +51,7 @@ public class ParaConvexWorker implements Runnable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
 
                 if (!worker0.parentSplitter.hasFoundLowestPoint()){
                     //sort

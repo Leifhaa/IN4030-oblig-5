@@ -37,20 +37,16 @@ public class ParaConvexHull {
 
         ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, candidates, chart);
 
+
         //create 2 threads
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
         thread0.start();
 
-
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
         ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, candidates, chart);
         ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
-
         worker1.run();
-        //Thread thread1 = new Thread(worker1);
-        //thread1.start();
-
 
         try {
             thread0.join();
