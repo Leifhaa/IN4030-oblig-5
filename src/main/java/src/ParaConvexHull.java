@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 public class ParaConvexHull {
 
-    private final ConvexHull chart;
+    public final ConvexHull chart;
     int nThreads;
     private FindMaxWorker[] findMaxWorkers;
     private Thread[] findMaxThreads;
@@ -54,14 +54,12 @@ public class ParaConvexHull {
         }
         coHull.add(chart.MAX_X);
         coHull.append(worker0.getPointsFound());
-        //coHull.add(chart.MIN_X);
+        coHull.add(chart.MIN_X);
         coHull.append(worker1.getPointsFound());
 
 
 
-        //Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
-        //precode.margin = 200;
-        //precode.drawGraph();
+
     }
 
     private void findMinAndMax() {

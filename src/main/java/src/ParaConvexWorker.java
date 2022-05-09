@@ -52,6 +52,7 @@ public class ParaConvexWorker implements Runnable {
                 }
 
                 pointsFound.append(worker0.getPointsFound());
+                pointsFound.add(parentSplitter.getLowestLeftPointIndex());
                 pointsFound.append(worker1.getPointsFound());
             } else {
                 //Do it sequentially as we're not allowed to create more threads
@@ -62,7 +63,6 @@ public class ParaConvexWorker implements Runnable {
         }
         else{
             pointsFound.append(parentSplitter.getMidPoints());
-            pointsFound.add(parentLine.getEndIndex());
         }
     }
 

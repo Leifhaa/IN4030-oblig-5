@@ -6,7 +6,7 @@ import org.junit.Test;
 public class TestLine {
 
     @Test
-    public void test100Seq(){
+    public void test100Seq() {
         int n = 100;
         ConvexHull chart = new ConvexHull(n);
         SequentialConvexHull seq = new SequentialConvexHull(chart);
@@ -14,7 +14,8 @@ public class TestLine {
 
         long seqTime = System.nanoTime();
         seq.find();
-        double total = (System.nanoTime() - seqTime) / 1000000.0;;
+        double total = (System.nanoTime() - seqTime) / 1000000.0;
+        ;
         System.out.println(total);
 
 
@@ -35,18 +36,19 @@ public class TestLine {
         expected.add(65);
         expected.add(67);
         expected.add(85);
-        for (int i = 0; i <  seq.coHull.len; i++){
+        for (int i = 0; i < seq.coHull.len; i++) {
             Assert.assertEquals(seq.coHull.get(i), expected.get(i));
         }
     }
 
     @Test
-    public void testPara100(){
+    public void testPara100() {
         ParaConvexHull para = new ParaConvexHull(100);
 
         long seqTime = System.nanoTime();
         para.find();
-        double total = (System.nanoTime() - seqTime) / 1000000.0;;
+        double total = (System.nanoTime() - seqTime) / 1000000.0;
+        ;
         System.out.println(total);
 
 
@@ -67,23 +69,24 @@ public class TestLine {
         expected.add(65);
         expected.add(67);
         expected.add(85);
-        for (int i = 0; i <  para.coHull.len; i++){
+        for (int i = 0; i < para.coHull.len; i++) {
             Assert.assertEquals(para.coHull.get(i), expected.get(i));
         }
     }
 
     @Test
-    public void testSeq_10million(){
+    public void testSeq_10million() {
         int n = 100_000_00;
 
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 7; i++) {
             ConvexHull chart = new ConvexHull(n);
             SequentialConvexHull seq = new SequentialConvexHull(chart);
             seq.populateChart(n);
 
             long seqTime = System.nanoTime();
             seq.find();
-            double total = (System.nanoTime() - seqTime) / 1000000.0;;
+            double total = (System.nanoTime() - seqTime) / 1000000.0;
+            ;
             System.out.println(total);
         }
 
@@ -91,21 +94,49 @@ public class TestLine {
 
 
     @Test
-    public void testPara_10million(){
+    public void testPara_10million() {
         int n = 100_000_00;
 
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 7; i++) {
             ParaConvexHull para = new ParaConvexHull(n);
             long seqTime = System.nanoTime();
             para.find();
-            double total = (System.nanoTime() - seqTime) / 1000000.0;;
+            double total = (System.nanoTime() - seqTime) / 1000000.0;
+            ;
             System.out.println(total);
         }
 
     }
 
+    private void compareResults(int n) {
+        ParaConvexHull para = new ParaConvexHull(n);
+        para.find();
 
 
+        ConvexHull chart = new ConvexHull(n);
+        SequentialConvexHull seq = new SequentialConvexHull(chart);
+        seq.populateChart(n);
+        seq.find();
+
+        Assert.assertEquals(para.coHull.len, seq.coHull.len);
+        for (int i = 0; i < para.coHull.len; i++) {
+            Assert.assertEquals(para.coHull.get(i), seq.coHull.get(i));
+        }
+    }
+
+    @Test
+    public void test_seqAndParaIsEqual_10() {
+        int n = 10;
+        compareResults(n);
+    }
+
+
+
+    @Test
+    public void test_seqAndParaIsEqual_100() {
+        int n = 100;
+        compareResults(n);
+    }
 
 
 }
