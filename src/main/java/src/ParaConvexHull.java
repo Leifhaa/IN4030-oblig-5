@@ -8,8 +8,6 @@ public class ParaConvexHull {
     private Thread[] findMaxThreads;
     public IntList coHull = new IntList();
 
-
-
     public ParaConvexHull(int n){
         this.chart = new ConvexHull(n);
         NPunkter17 nPnkter = new NPunkter17(n, 2);
@@ -21,34 +19,35 @@ public class ParaConvexHull {
 
     public void find() {
         int treeLevel = 1;
+
         findMinAndMax();
+
 
         //Decide depth of using threads
         int maxDepth = nThreads / 2;
 
 
-        //Add max X
-        coHull.add(chart.MAX_X);
-
         //Create the middle line between min & max
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
-        ConvexHullPointSplitter splitter = new ConvexHullPointSplitter(midLineLeft, chart);
-        splitter.split();
+        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, chart);
 
         //create 2 threads
-        ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitter, this.chart, treeLevel, maxDepth);
+        ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
         thread0.start();
 
+
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
-        ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitter, this.chart, treeLevel, maxDepth);
-        Thread thread1 = new Thread(worker1);
-        thread1.start();
+        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, chart);
+        ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
+        worker1.run();
+        //Thread thread1 = new Thread(worker1);
+        //thread1.start();
 
 
         try {
             thread0.join();
-            thread1.join();
+            //thread1.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -59,9 +58,9 @@ public class ParaConvexHull {
 
 
 
-        Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
-        precode.margin = 200;
-        precode.drawGraph();
+        //Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
+        //precode.margin = 200;
+        //precode.drawGraph();
     }
 
     private void findMinAndMax() {

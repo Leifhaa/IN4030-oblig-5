@@ -67,10 +67,45 @@ public class TestLine {
         expected.add(65);
         expected.add(67);
         expected.add(85);
-        //for (int i = 0; i <  para.coHull.len; i++){
-        //    Assert.assertEquals(para.coHull.get(i), expected.get(i));
-        //}
+        for (int i = 0; i <  para.coHull.len; i++){
+            Assert.assertEquals(para.coHull.get(i), expected.get(i));
+        }
     }
+
+    @Test
+    public void testSeq_10million(){
+        int n = 100_000_00;
+
+        for (int i = 0; i < 7; i++){
+            ConvexHull chart = new ConvexHull(n);
+            SequentialConvexHull seq = new SequentialConvexHull(chart);
+            seq.populateChart(n);
+
+            long seqTime = System.nanoTime();
+            seq.find();
+            double total = (System.nanoTime() - seqTime) / 1000000.0;;
+            System.out.println(total);
+        }
+
+    }
+
+
+    @Test
+    public void testPara_10million(){
+        int n = 100_000_00;
+
+        for (int i = 0; i < 7; i++){
+            ParaConvexHull para = new ParaConvexHull(n);
+            long seqTime = System.nanoTime();
+            para.find();
+            double total = (System.nanoTime() - seqTime) / 1000000.0;;
+            System.out.println(total);
+        }
+
+    }
+
+
+
 
 
 }

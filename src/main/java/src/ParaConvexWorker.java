@@ -34,16 +34,17 @@ public class ParaConvexWorker implements Runnable {
                 Thread thread0 = new Thread(worker0);
                 thread0.start();
 
+
+                //Process the second node instead of creating a thread for it. Otherwise this thread would just be idle.
                 Line line1 = new Line(chart, parentSplitter.getLowestLeftPointIndex(), parentLine.getEndIndex());
                 ConvexHullPointSplitter splitter1 = new ConvexHullPointSplitter(line1, parentSplitter.getLeftSide(), chart);
                 ParaConvexWorker worker1 = new ParaConvexWorker(line1, splitter1, chart, treeLevel, maxDepth);
-                Thread thread1 = new Thread(worker1);
-                thread1.start();
+                worker1.run();
 
 
                 try {
                     thread0.join();
-                    thread1.join();
+                    //thread1.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
