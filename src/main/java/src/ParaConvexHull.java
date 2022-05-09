@@ -1,9 +1,5 @@
 package src;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Comparator;
-
 public class ParaConvexHull {
 
     public final ConvexHull chart;
@@ -22,7 +18,6 @@ public class ParaConvexHull {
     }
 
     public void find() {
-        long seqTime = System.nanoTime();
         int treeLevel = 1;
         findMinAndMax();
 
@@ -32,24 +27,24 @@ public class ParaConvexHull {
         //Create the middle line between min & max
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
 
+        /**
+         * Do the initial splitting only once
+         */
+        ConvexHullPointSplitterPara initSplit = new ConvexHullPointSplitterPara(midLineLeft, chart);
+        initSplit.splitByChart();
 
-        ConvexHullPointSplitter mySplitter = new ConvexHullPointSplitter(midLineLeft, chart, true);
-        mySplitter.splitByChart();
-
-        double total = (System.nanoTime() - seqTime) / 1000000.0;
-
-        System.out.println("spend " + total);
-        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, mySplitter.getLeftSide(), chart);
+        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, initSplit.getLeftSide(), chart);
+        splitterLeft.setSplitValues(initSplit.getRightSide(), initSplit.getLeftSide(), initSplit.getMidPoints(), initSplit.getLowestLeftPointIndex(), initSplit.getLowestPointVal());
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
         thread0.start();
 
 
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
-        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, mySplitter.getRightSide(), chart);
+        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, initSplit.getRightSide(), chart);
+        splitterRight.setSplitValues(initSplit.getLeftSide(), initSplit.getRightSide(), initSplit.getMidPoints(), initSplit.getHighestRIghtPointIndex(), initSplit.getHighestPointVal());
         ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
         worker1.run();
-
 
         try {
             thread0.join();

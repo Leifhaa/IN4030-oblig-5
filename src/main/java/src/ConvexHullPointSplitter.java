@@ -13,8 +13,10 @@ public class ConvexHullPointSplitter {
     private IntList midPoints;
     private int lowestLeftPointIndex = -1;
     private int lowestPointVal = 0;
-
-
+    /**
+     * Variable if the splitter has already splitted.
+     */
+    private boolean splitted = false;
 
     public boolean hasFoundLowestPoint(){
         return lowestLeftPointIndex != -1;
@@ -56,12 +58,11 @@ public class ConvexHullPointSplitter {
         this.chart = chart;
     }
 
-    public ConvexHullPointSplitter(Line midLineLeft, ConvexHull chart, boolean parallel) {
-        this.line = midLineLeft;
-        this.chart = chart;
-    }
-
     public void split(){
+        if (splitted){
+            return;
+        }
+
         rightSide = new IntList();
         leftSide = new IntList();
         midPoints = new IntList();
@@ -89,6 +90,16 @@ public class ConvexHullPointSplitter {
                 midPoints.add(candidate);
             }
         }
+        splitted = true;
+    }
+
+    public void setSplitValues(IntList rightSide, IntList leftSIde, IntList midPoints, int lowestLeftPointIndex, int lowestPointVal){
+        this.rightSide = rightSide;
+        this.leftSide = leftSIde;
+        this.midPoints = midPoints;
+        this.lowestLeftPointIndex = lowestLeftPointIndex;
+        this.lowestPointVal = lowestPointVal;
+        this.splitted = true;
     }
 
     public void splitByChart(){

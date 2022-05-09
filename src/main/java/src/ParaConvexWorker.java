@@ -26,8 +26,6 @@ public class ParaConvexWorker implements Runnable {
     public void run() {
         parentSplitter.split();
 
-
-
         //If there's new external points, create new threads
         if (parentSplitter.hasFoundLowestPoint()){
 
