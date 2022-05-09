@@ -61,33 +61,11 @@ public class ParaConvexWorker implements Runnable {
             }
         }
         else{
-            sortLinePoints(parentSplitter.getMidPoints(), parentLine.getEndIndex());
             pointsFound.append(parentSplitter.getMidPoints());
             pointsFound.add(parentLine.getEndIndex());
         }
     }
 
-    private void sortLinePoints(IntList points, int p2){
-        if (points.len == 0){
-            return;
-        }
-
-        //Create an copy of the array (size has to be correct here)
-        Integer[] clone = new Integer[points.len];
-        for (int i = 0; i < points.len; i++){
-            clone[i] = points.get(i);
-        }
-
-        Arrays.sort(clone, 0, points.size(), (Comparator.comparingInt((Integer i) -> relativeDistanceBetweenPoints(i, p2))));
-
-        for (int i = 0; i < clone.length; i++) {
-            points.data[i] = clone[i];
-        }
-    }
-
-    private int relativeDistanceBetweenPoints(int p1, int p2) {
-        return (int) (Math.pow(chart.x[p1] - chart.x[p2], 2) + Math.pow(chart.y[p1] - chart.y[p2], 2));
-    }
 
     public IntList getPointsFound() {
         return pointsFound;
