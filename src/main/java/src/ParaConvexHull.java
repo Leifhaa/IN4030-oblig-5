@@ -1,5 +1,6 @@
 package src;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -21,13 +22,9 @@ public class ParaConvexHull {
     }
 
     public void find() {
+        long seqTime = System.nanoTime();
         int treeLevel = 1;
         findMinAndMax();
-
-        IntList candidates = new IntList(chart.n);
-        for (int i = 0; i < chart.n; i++){
-            candidates.add(i);
-        }
 
         //Decide depth of using threads
         int maxDepth = nThreads / 2;
@@ -36,15 +33,23 @@ public class ParaConvexHull {
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
 
 
-        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, candidates, chart);
+        ConvexHullPointSplitter mySplitter = new ConvexHullPointSplitter(midLineLeft, chart, true);
+        mySplitter.splitByChart();
+
+        double total = (System.nanoTime() - seqTime) / 1000000.0;
+
+        System.out.println("spend " + total);
+        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, mySplitter.getLeftSide(), chart);
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
         thread0.start();
 
+
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
-        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, candidates, chart);
+        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, mySplitter.getRightSide(), chart);
         ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
         worker1.run();
+
 
         try {
             thread0.join();

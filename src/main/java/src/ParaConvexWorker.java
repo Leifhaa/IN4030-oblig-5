@@ -27,8 +27,11 @@ public class ParaConvexWorker implements Runnable {
         parentSplitter.split();
 
 
+
         //If there's new external points, create new threads
         if (parentSplitter.hasFoundLowestPoint()){
+
+
             //Create new threads for investigating these external threads, if allowed
             if (allowThreadCreation) {
                 Line line0 = new Line(chart, parentLine.getStartIndex(), parentSplitter.getLowestLeftPointIndex());
@@ -74,6 +77,8 @@ public class ParaConvexWorker implements Runnable {
                 seq.seqRec(parentLine, parentSplitter.getLowestLeftPointIndex(), parentSplitter.getLeftSide());
                 pointsFound.append(seq.coHull);
             }
+
+
         }
     }
 

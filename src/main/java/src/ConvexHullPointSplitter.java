@@ -6,13 +6,15 @@ package src;
  */
 public class ConvexHullPointSplitter {
     private final Line line;
-    private final IntList pointCandidates;
+    private IntList pointCandidates;
     private final ConvexHull chart;
     private IntList rightSide;
     private IntList leftSide;
     private IntList midPoints;
     private int lowestLeftPointIndex = -1;
     private int lowestPointVal = 0;
+
+
 
     public boolean hasFoundLowestPoint(){
         return lowestLeftPointIndex != -1;
@@ -54,12 +56,46 @@ public class ConvexHullPointSplitter {
         this.chart = chart;
     }
 
+    public ConvexHullPointSplitter(Line midLineLeft, ConvexHull chart, boolean parallel) {
+        this.line = midLineLeft;
+        this.chart = chart;
+    }
+
     public void split(){
         rightSide = new IntList();
         leftSide = new IntList();
         midPoints = new IntList();
         for (int i = 0; i < pointCandidates.len; i++){
             int candidate = pointCandidates.get(i);
+
+            if (candidate == line.getStartIndex() || candidate == line.getEndIndex()){
+                continue;
+            }
+
+            int x = chart.x[candidate];
+            int y = chart.y[candidate];
+            int distance = line.calcRelativeDistance(x, y);
+            if (distance > 0){
+                rightSide.add(candidate);
+            }
+            else if (distance < 0) {
+                leftSide.add(candidate);
+                if (distance < lowestPointVal){
+                    lowestLeftPointIndex = candidate;
+                    lowestPointVal = distance;
+                }
+            }
+            else{
+                midPoints.add(candidate);
+            }
+        }
+    }
+
+    public void splitByChart(){
+        rightSide = new IntList();
+        leftSide = new IntList();
+        midPoints = new IntList();
+        for (int candidate = 0; candidate < chart.n; candidate++){
 
             if (candidate == line.getStartIndex() || candidate == line.getEndIndex()){
                 continue;
