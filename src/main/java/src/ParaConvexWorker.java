@@ -68,7 +68,6 @@ public class ParaConvexWorker implements Runnable {
                 }
                 pointsFound.append(worker1.getPointsFound());
 
-
             } else {
                 //Do it sequentially as we're not allowed to create more threads
                 SequentialConvexHull seq = new SequentialConvexHull(chart);
@@ -77,6 +76,7 @@ public class ParaConvexWorker implements Runnable {
             }
         }
     }
+
 
     public IntList getPointsFound() {
         return pointsFound;

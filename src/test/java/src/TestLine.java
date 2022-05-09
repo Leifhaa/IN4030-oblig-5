@@ -96,7 +96,6 @@ public class TestLine {
     @Test
     public void testPara_10million() {
         int n = 100_000_00;
-
         for (int i = 0; i < 7; i++) {
             ParaConvexHull para = new ParaConvexHull(n);
             long seqTime = System.nanoTime();

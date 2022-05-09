@@ -35,8 +35,8 @@ public class ParaConvexHull {
         //Create the middle line between min & max
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
 
+
         ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, candidates, chart);
-        //create 2 threads
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
         Thread thread0 = new Thread(worker0);
         thread0.start();
