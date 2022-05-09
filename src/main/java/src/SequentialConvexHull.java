@@ -7,8 +7,11 @@ public class SequentialConvexHull {
     public ConvexHull chart;
     public IntList coHull = new IntList();
 
-    public SequentialConvexHull(int n){
-        this.chart = new ConvexHull(n);
+    public SequentialConvexHull(ConvexHull chart){
+        this.chart = chart;
+    }
+
+    public void populateChart(int n){
         NPunkter17 nPnkter = new NPunkter17(n, 2);
         nPnkter.fyllArrayer(chart.x, chart.y);
     }
@@ -55,9 +58,9 @@ public class SequentialConvexHull {
         splitterBottom.split();
         seqRec(midLineToRight, splitterBottom.getLowestLeftPointIndex(), splitterBottom.getLeftSide());
 
-        Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
-        precode.margin = 200;
-        precode.drawGraph();
+        //Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
+        //precode.margin = 200;
+        //precode.drawGraph();
     }
 
     private void seqRec(Line line, int p3, IntList pointCandidates){

@@ -2,7 +2,10 @@ package src;
 
 public class Main {
     public static void main(String[] args) {
-        SequentialConvexHull seq = new SequentialConvexHull(100);
+        int n = 100;
+        ConvexHull chart = new ConvexHull(n);
+        SequentialConvexHull seq = new SequentialConvexHull(chart);
+        seq.populateChart(n);
 
         long seqTime = System.nanoTime();
         seq.find();
