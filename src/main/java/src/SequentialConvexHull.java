@@ -1,6 +1,7 @@
 package src;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SequentialConvexHull {
     public ConvexHull chart;
@@ -46,46 +47,46 @@ public class SequentialConvexHull {
         splitterTop.split();
 
         //Call recursive method for upper & lower part of the convex hull
-        seqRec(midLineLeft, splitterTop.lowestLeftPointIndex, splitterTop.leftSide);
+        seqRec(midLineLeft, splitterTop.getLowestLeftPointIndex(), splitterTop.getLeftSide());
         coHull.add(chart.MIN_X);
 
         Line midLineToRight = new Line(chart, chart.MIN_X, chart.MAX_X);
-        ConvexHullPointSplitter splitterBottom = new ConvexHullPointSplitter(midLineToRight, splitterTop.rightSide);
+        ConvexHullPointSplitter splitterBottom = new ConvexHullPointSplitter(midLineToRight, splitterTop.getRightSide(), chart);
         splitterBottom.split();
-        seqRec(midLineToRight, splitterBottom.lowestLeftPointIndex, splitterBottom.leftSide);
+        seqRec(midLineToRight, splitterBottom.getLowestLeftPointIndex(), splitterBottom.getLeftSide());
 
-        //Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
-        //precode.margin = 200;
-        //precode.drawGraph();
+        Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
+        precode.margin = 200;
+        precode.drawGraph();
     }
 
     private void seqRec(Line line, int p3, IntList pointCandidates){
         //Try create first line
         Line firstLine = new Line(chart, line.getStartIndex(), p3);
-        ConvexHullPointSplitter firstSplitter = new ConvexHullPointSplitter(firstLine, pointCandidates);
+        ConvexHullPointSplitter firstSplitter = new ConvexHullPointSplitter(firstLine, pointCandidates, chart);
         firstSplitter.split();
         if (firstSplitter.hasFoundLowestPoint()){
-            seqRec(firstLine, firstSplitter.lowestLeftPointIndex, firstSplitter.leftSide);
+            seqRec(firstLine, firstSplitter.getLowestLeftPointIndex(), firstSplitter.getLeftSide());
         }
         else{
             //Remaining points (if any) is on the current line
-            sortLinePoints(firstSplitter.midPoints, line.getEndIndex());
-            this.coHull.append(firstSplitter.midPoints);
+            sortLinePoints(firstSplitter.getMidPoints(), line.getEndIndex());
+            this.coHull.append(firstSplitter.getMidPoints());
         }
 
         coHull.add(p3);
 
         //Try create second line
         Line secondLine = new Line(chart, p3, line.getEndIndex());
-        ConvexHullPointSplitter secondSplitter = new ConvexHullPointSplitter(secondLine, firstSplitter.rightSide);
+        ConvexHullPointSplitter secondSplitter = new ConvexHullPointSplitter(secondLine, firstSplitter.getRightSide(), chart);
         secondSplitter.split();
         if (secondSplitter.hasFoundLowestPoint()){
-            seqRec(secondLine, secondSplitter.lowestLeftPointIndex, secondSplitter.leftSide);
+            seqRec(secondLine, secondSplitter.getLowestLeftPointIndex(), secondSplitter.getLeftSide());
         }
         else{
             //Remaining points (if any) is on the current line
-            sortLinePoints(secondSplitter.midPoints, line.getStartIndex());
-            this.coHull.append(secondSplitter.midPoints);
+            sortLinePoints(secondSplitter.getMidPoints(), line.getStartIndex());
+            this.coHull.append(secondSplitter.getMidPoints());
         }
     }
 
@@ -101,7 +102,7 @@ public class SequentialConvexHull {
             clone[i] = points.get(i);
         }
 
-        Arrays.sort(clone, 0, points.size(), ((Integer i, Integer j) -> (relativeDistanceBetweenPoints(i, p2) - relativeDistanceBetweenPoints(j, p2))));
+        Arrays.sort(clone, 0, points.size(), (Comparator.comparingInt((Integer i) -> relativeDistanceBetweenPoints(i, p2))));
 
         for (int i = 0; i < clone.length; i++) {
             points.data[i] = clone[i];
@@ -110,74 +111,5 @@ public class SequentialConvexHull {
 
     private int relativeDistanceBetweenPoints(int p1, int p2) {
         return (int) (Math.pow(chart.x[p1] - chart.x[p2], 2) + Math.pow(chart.y[p1] - chart.y[p2], 2));
-    }
-
-    /**
-     * Helper class to find out points which is above or below a line in a convex hull
-     */
-    private class ConvexHullPointSplitter {
-        private final Line line;
-        private final IntList pointCandidates;
-        private IntList rightSide;
-        private IntList leftSide;
-        private IntList midPoints;
-        private int lowestLeftPointIndex = -1;
-        private int lowestPointVal = 0;
-
-        public boolean hasFoundLowestPoint(){
-            return lowestLeftPointIndex != -1;
-        }
-
-        public boolean hasPointsOnLine(){
-            return leftSide.len > 0 && lowestPointVal == 0;
-        }
-
-        public int pointsOnLine(){
-            return leftSide.len;
-        }
-
-        public ConvexHullPointSplitter(Line line, IntList pointCandidates){
-            this.pointCandidates = pointCandidates;
-            this.line = line;
-        }
-
-        public ConvexHullPointSplitter(Line middleLine, ConvexHull chart) {
-            IntList list = new IntList(chart.n);
-            for (int i = 0; i < chart.n; i++){
-                list.add(i);
-            }
-            this.pointCandidates = list;
-            this.line = middleLine;
-        }
-
-        public void split(){
-            rightSide = new IntList();
-            leftSide = new IntList();
-            midPoints = new IntList();
-            for (int i = 0; i < pointCandidates.len; i++){
-                int candidate = pointCandidates.get(i);
-
-                if (candidate == line.getStartIndex() || candidate == line.getEndIndex()){
-                    continue;
-                }
-
-                int x = chart.x[candidate];
-                int y = chart.y[candidate];
-                int distance = line.calcRelativeDistance(x, y);
-                if (distance > 0){
-                    rightSide.add(candidate);
-                }
-                else if (distance < 0) {
-                    leftSide.add(candidate);
-                    if (distance < lowestPointVal){
-                        lowestLeftPointIndex = candidate;
-                        lowestPointVal = distance;
-                    }
-                }
-                else{
-                    midPoints.add(candidate);
-                }
-            }
-        }
     }
 }
