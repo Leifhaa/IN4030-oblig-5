@@ -51,9 +51,22 @@ public class ParaConvexWorker implements Runnable {
                     e.printStackTrace();
                 }
 
+                if (!worker0.parentSplitter.hasFoundLowestPoint()){
+                    //sort
+                    sortLinePoints(worker0.parentSplitter.getMidPoints(), line0.getEndIndex());
+                    pointsFound.append(worker0.parentSplitter.getMidPoints());
+                }
                 pointsFound.append(worker0.getPointsFound());
+
                 pointsFound.add(parentSplitter.getLowestLeftPointIndex());
+
+                if (!worker1.parentSplitter.hasFoundLowestPoint()){
+                    sortLinePoints(worker1.parentSplitter.getMidPoints(), line1.getStartIndex());
+                    pointsFound.append(worker1.parentSplitter.getMidPoints());
+                }
                 pointsFound.append(worker1.getPointsFound());
+
+
             } else {
                 //Do it sequentially as we're not allowed to create more threads
                 SequentialConvexHull seq = new SequentialConvexHull(chart);
@@ -61,13 +74,32 @@ public class ParaConvexWorker implements Runnable {
                 pointsFound.append(seq.coHull);
             }
         }
-        else{
-            pointsFound.append(parentSplitter.getMidPoints());
-        }
     }
-
 
     public IntList getPointsFound() {
         return pointsFound;
+    }
+
+
+    private void sortLinePoints(IntList points, int p2){
+        if (points.len == 0){
+            return;
+        }
+
+        //Create an copy of the array (size has to be correct here)
+        Integer[] clone = new Integer[points.len];
+        for (int i = 0; i < points.len; i++){
+            clone[i] = points.get(i);
+        }
+
+        Arrays.sort(clone, 0, points.size(), (Comparator.comparingInt((Integer i) -> relativeDistanceBetweenPoints(i, p2))));
+
+        for (int i = 0; i < clone.length; i++) {
+            points.data[i] = clone[i];
+        }
+    }
+
+    private int relativeDistanceBetweenPoints(int p1, int p2) {
+        return (int) (Math.pow(chart.x[p1] - chart.x[p2], 2) + Math.pow(chart.y[p1] - chart.y[p2], 2));
     }
 }

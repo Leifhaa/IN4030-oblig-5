@@ -102,7 +102,6 @@ public class TestLine {
             long seqTime = System.nanoTime();
             para.find();
             double total = (System.nanoTime() - seqTime) / 1000000.0;
-            ;
             System.out.println(total);
         }
 
@@ -135,6 +134,24 @@ public class TestLine {
     @Test
     public void test_seqAndParaIsEqual_100() {
         int n = 100;
+        compareResults(n);
+    }
+
+    @Test
+    public void test_seqAndParaIsEqual_1000() {
+        int n = 1000;
+        compareResults(n);
+    }
+
+    @Test
+    public void test_seqAndParaIsEqual_10000() {
+        int n = 10000;
+        compareResults(n);
+    }
+
+    @Test
+    public void test_seqAndParaIsEqual_100000() {
+        int n = 100000;
         compareResults(n);
     }
 

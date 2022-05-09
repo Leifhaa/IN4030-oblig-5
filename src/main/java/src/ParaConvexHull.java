@@ -22,15 +22,20 @@ public class ParaConvexHull {
 
     public void find() {
         int treeLevel = 1;
-
         findMinAndMax();
+
+        IntList candidates = new IntList(chart.n);
+        for (int i = 0; i < chart.n; i++){
+            candidates.add(i);
+        }
 
         //Decide depth of using threads
         int maxDepth = nThreads / 2;
 
         //Create the middle line between min & max
         Line midLineLeft = new Line(chart, chart.MAX_X, chart.MIN_X);
-        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, chart);
+
+        ConvexHullPointSplitter splitterLeft = new ConvexHullPointSplitter(midLineLeft, candidates, chart);
 
         //create 2 threads
         ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitterLeft, this.chart, treeLevel, maxDepth);
@@ -39,8 +44,9 @@ public class ParaConvexHull {
 
 
         Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
-        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, chart);
+        ConvexHullPointSplitter splitterRight = new ConvexHullPointSplitter(midlineRight, candidates, chart);
         ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitterRight, this.chart, treeLevel, maxDepth);
+
         worker1.run();
         //Thread thread1 = new Thread(worker1);
         //thread1.start();
@@ -56,10 +62,6 @@ public class ParaConvexHull {
         coHull.append(worker0.getPointsFound());
         coHull.add(chart.MIN_X);
         coHull.append(worker1.getPointsFound());
-
-
-
-
     }
 
     private void findMinAndMax() {
