@@ -10,17 +10,16 @@ public class ParaConvexWorker implements Runnable {
     private ConvexHullPointSplitter parentSplitter;
     private final ConvexHull chart;
     private int treeLevel;
-    private IntList pointsFound;
-    private ParaConvexWorker workers[];
+    private SequentialConvexHull seq;
+    private IntList pointsFound = new IntList();
 
-    public ParaConvexWorker(Line parentLine, ConvexHullPointSplitter splitter, ConvexHull chart, int treeLevel, int maxDepth, IntList pointsFound){
+    public ParaConvexWorker(Line parentLine, ConvexHullPointSplitter splitter, ConvexHull chart, int treeLevel, int maxDepth){
         this.parentLine = parentLine;
         this.parentSplitter = splitter;
         this.chart = chart;
         this.treeLevel = treeLevel++;
         this.allowThreadCreation = treeLevel >= maxDepth;
         this.maxDepth = maxDepth;
-        this.pointsFound = pointsFound;
     }
 
     @Override
@@ -29,11 +28,38 @@ public class ParaConvexWorker implements Runnable {
 
         if (parentSplitter.hasFoundLowestPoint()){
             if (allowThreadCreation){
-                //createChildWorkers();
+                Line line0 = new Line(chart, parentLine.getStartIndex(), parentSplitter.getLowestLeftPointIndex());
+                ConvexHullPointSplitter splitter0 = new ConvexHullPointSplitter(line0, parentSplitter.getLeftSide(), chart);
+                ParaConvexWorker worker0 = new ParaConvexWorker(line0, splitter0, chart, treeLevel, maxDepth);
+                Thread thread0 = new Thread(worker0);
+                thread0.start();
+
+                Line line1 = new Line(chart, parentSplitter.getLowestLeftPointIndex(), parentLine.getEndIndex());
+                ConvexHullPointSplitter splitter1 = new ConvexHullPointSplitter(line1, parentSplitter.getLeftSide(), chart);
+                ParaConvexWorker worker1 = new ParaConvexWorker(line1, splitter1, chart, treeLevel, maxDepth);
+                Thread thread1 = new Thread(worker1);
+                thread1.start();
+
+
+                try {
+                    thread0.join();
+                    thread1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                pointsFound.append(worker0.getPointsFound());
+                pointsFound.append(worker1.getPointsFound());
             }
             else{
-                //SequentialConvexHull seq = new SequentialConvexHull()
+                SequentialConvexHull seq = new SequentialConvexHull(chart);
+                seq.seqRec(parentLine, parentSplitter.getLowestLeftPointIndex(), parentSplitter.getLeftSide());
+                pointsFound.append(seq.coHull);
             }
         }
+    }
+
+    public IntList getPointsFound(){
+        return pointsFound;
     }
 }

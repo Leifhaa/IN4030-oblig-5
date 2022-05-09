@@ -63,7 +63,7 @@ public class SequentialConvexHull {
         //precode.drawGraph();
     }
 
-    private void seqRec(Line line, int p3, IntList pointCandidates){
+    public void seqRec(Line line, int p3, IntList pointCandidates){
         //Try create first line
         Line firstLine = new Line(chart, line.getStartIndex(), p3);
         ConvexHullPointSplitter firstSplitter = new ConvexHullPointSplitter(firstLine, pointCandidates, chart);

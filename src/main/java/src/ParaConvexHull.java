@@ -19,10 +19,9 @@ public class ParaConvexHull {
         findMaxThreads = new Thread[nThreads];
     }
 
-    public void find(){
+    public void find() {
         int treeLevel = 1;
         findMinAndMax();
-        IntList pointsFound = new IntList();
 
         //Decide depth of using threads
         int maxDepth = nThreads / 2;
@@ -37,10 +36,32 @@ public class ParaConvexHull {
         splitter.split();
 
         //create 2 threads
-        ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitter, this.chart, treeLevel, maxDepth, pointsFound);
-        worker0.run();
+        ParaConvexWorker worker0 = new ParaConvexWorker(midLineLeft, splitter, this.chart, treeLevel, maxDepth);
+        Thread thread0 = new Thread(worker0);
+        thread0.start();
 
-        System.out.println("Hello world!");
+        Line midlineRight = new Line(chart, chart.MIN_X, chart.MAX_X);
+        ParaConvexWorker worker1 = new ParaConvexWorker(midlineRight, splitter, this.chart, treeLevel, maxDepth);
+        Thread thread1 = new Thread(worker1);
+        thread1.start();
+
+
+        try {
+            thread0.join();
+            thread1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        coHull.add(chart.MAX_X);
+        coHull.append(worker0.getPointsFound());
+        coHull.add(chart.MIN_X);
+        coHull.append(worker1.getPointsFound());
+
+
+
+        Oblig5Precode precode = new Oblig5Precode(this.chart, this.coHull);
+        precode.margin = 200;
+        precode.drawGraph();
     }
 
     private void findMinAndMax() {

@@ -2,6 +2,7 @@ package src;
 
 public class Main {
     public static void main(String[] args) {
+        /*
         int n = 100;
         ConvexHull chart = new ConvexHull(n);
         SequentialConvexHull seq = new SequentialConvexHull(chart);
@@ -9,6 +10,19 @@ public class Main {
 
         long seqTime = System.nanoTime();
         seq.find();
+        double total = (System.nanoTime() - seqTime) / 1000000.0;;
+        System.out.println(total);
+
+         */
+
+
+
+
+        int n = 100;
+        ParaConvexHull para = new ParaConvexHull(n);
+
+        long seqTime = System.nanoTime();
+        para.find();
         double total = (System.nanoTime() - seqTime) / 1000000.0;;
         System.out.println(total);
     }
