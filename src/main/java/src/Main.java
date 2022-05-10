@@ -32,10 +32,6 @@ public class Main {
             runBenchmark(1000000, seed, nThreads);
             runBenchmark(10000000, seed, nThreads);
         }
-
-
-
-
     }
 
     private static void runBenchmark(int n, int seed, int nThreads) {
