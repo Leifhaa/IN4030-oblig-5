@@ -13,6 +13,7 @@ public class Main {
             output = Integer.parseInt(args[4]);
         } catch (Exception e) {
             System.out.println("Correct usage is: java -cp target/IN4030-oblig-5-1.0-SNAPSHOT.jar src.Main <m> <n> <seed> <threads> <output>");
+            printInstructions();
             return;
         }
         if (nThreads == 0) {
@@ -32,6 +33,14 @@ public class Main {
             runBenchmark(1000000, seed, nThreads);
             runBenchmark(10000000, seed, nThreads);
         }
+    }
+
+    private static void printInstructions() {
+        System.out.println("m - The mode to run. Can be either 0 (sequential), 1 (parallel) or 2 (benchmarking)\n" +
+                "n - How many points there should be in total\n" +
+                "seed - Seed to generating random numbers\n" +
+                "threads - how many threads to use in the parallel sorting. 0 means to use your computer's amount of cores.\n" +
+                "output - How to output the results. 0 means only writing to console, 1 means write to file & 2 means to draw output");
     }
 
     private static void runBenchmark(int n, int seed, int nThreads) {
