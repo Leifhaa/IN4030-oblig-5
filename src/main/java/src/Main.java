@@ -12,7 +12,7 @@ public class Main {
             nThreads = Integer.parseInt(args[3]);
             output = Integer.parseInt(args[4]);
         } catch (Exception e) {
-            System.out.println("Correct usage is: java -cp target/IN4030-oblig-5-1.0-SNAPSHOT.jar src.Main <m> <n> <seed> <threads>");
+            System.out.println("Correct usage is: java -cp target/IN4030-oblig-5-1.0-SNAPSHOT.jar src.Main <m> <n> <seed> <threads> <output>");
             return;
         }
         if (nThreads == 0) {

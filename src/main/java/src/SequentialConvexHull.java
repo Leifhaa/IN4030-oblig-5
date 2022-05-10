@@ -73,7 +73,7 @@ public class SequentialConvexHull {
         }
         else{
             //Remaining points (if any) is on the current line
-            sortLinePoints(firstSplitter.getMidPoints(), line.getEndIndex());
+            sortLinePoints(firstSplitter.getMidPoints(), line.getStartIndex());
             this.coHull.append(firstSplitter.getMidPoints());
         }
 
