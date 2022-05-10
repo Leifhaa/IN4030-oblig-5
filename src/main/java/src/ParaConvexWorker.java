@@ -54,7 +54,7 @@ public class ParaConvexWorker implements Runnable {
 
                 if (!worker0.parentSplitter.hasFoundLowestPoint()){
                     //sort
-                    sortLinePoints(worker0.parentSplitter.getMidPoints(), line0.getEndIndex());
+                    sortLinePoints(worker0.parentSplitter.getMidPoints(), line0.getStartIndex());
                     pointsFound.append(worker0.parentSplitter.getMidPoints());
                 }
                 pointsFound.append(worker0.getPointsFound());
