@@ -34,9 +34,7 @@ public class Main {
 
 
 
-        //Oblig5Precode precode = new Oblig5Precode(para.chart, para.coHull);
-        //precode.margin = 200;
-        //precode.drawGraph();
+
     }
 
     private static void runBenchmark(int n, int seed, int nThreads) {

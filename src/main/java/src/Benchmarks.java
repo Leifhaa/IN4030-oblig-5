@@ -8,17 +8,21 @@ import java.util.concurrent.TimeUnit;
 public class Benchmarks {
     private static int n = 100_000_00;
     private static int seed = 1;
-    private static int bits = 8;
+
 
     @Benchmark
     @Fork(1)
     @Warmup(iterations = 1)
     @Measurement(iterations = 3)
     public void testSequential(){
-        // Radix sorting
-        int[] a = Oblig4Precode.generateArray(n, seed);
-        RadixSort rs = new RadixSort(bits);
-        a = rs.radixSort(a);
+        long seqTime = System.nanoTime();
+        ConvexHull chart = new ConvexHull(n);
+        SequentialConvexHull seq = new SequentialConvexHull(chart);
+        seq.populateChart(n, seed);
+        double res = (System.nanoTime() - seqTime) / 1000000.0;
+        System.out.println("Generating points took " + res);
+
+        seq.find();
     }
 
     @Benchmark
@@ -26,9 +30,10 @@ public class Benchmarks {
     @Warmup(iterations = 1)
     @Measurement(iterations = 3)
     public void testParallel(){
-        int[] a = Oblig4Precode.generateArray(n, seed);
-        ParallelRadixSort radixSort = new ParallelRadixSort(8, bits, a);
-        radixSort.sort();
-        a = radixSort.getResult();
+        long seqTime = System.nanoTime();
+        ParaConvexHull para = new ParaConvexHull(n, seed, Runtime.getRuntime().availableProcessors());
+        double res = (System.nanoTime() - seqTime) / 1000000.0;
+        System.out.println("Generating points took " + res);
+        para.find();
     }
 }
